@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Favicon -->
+    <link
+      rel="shortcut icon"
+      href="../assets/favicon/favicon.ico"
+      type="image/x-icon"
+    />
+
+    <!-- Map CSS -->
+    <link
+      rel="stylesheet"
+      href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css"
+    />
+
+    <!-- Libs CSS -->
+    <link rel="stylesheet" href="../assets/css/libs.bundle.css" />
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="../assets/css/theme.bundle.css" />
+
+    <link rel="stylesheet" href="../assets/css/416.css" />
+
+    <script
+      src="https://kit.fontawesome.com/e547ffbc9a.js"
+      crossorigin="anonymous"
+    ></script>
+    <!-- Title -->
+    <title>The ALL Dictionary</title>
+  </head>
+  <body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-gray-200">
+      <div class="container">
+        <!-- Brand -->
+        <a class="navbar-brand" href="./search.html">
+          <img
+            src="../assets/img/brand.svg"
+            class="navbar-brand-img"
+            alt="..."
+          />
+        </a>
+
+        <!-- Toggler -->
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarCollapse"
+          aria-controls="navbarCollapse"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Collapse -->
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <!-- Toggler -->
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarCollapse"
+            aria-controls="navbarCollapse"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <i class="fe fe-x"></i>
+          </button>
+
+          <!-- Navigation -->
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="search.html"> Search </a>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                id="navbarQuiz"
+                data-bs-toggle="dropdown"
+                href="#"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                Quiz
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarQuiz">
+                <a class="dropdown-item" href="./squiz.html">Quiz</a>
+                <a class="dropdown-item" href="./wc.html">Words Challenge</a>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./showCard.html"> Card </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./payment.html"> Shop </a>
+            </li>
+          </ul>
+
+          <!-- Button -->
+          <a
+            href="./mypage.html"
+            class="btn btn-primary shadow lift me-1 ms-auto"
+          >
+            My Page
+          </a>
+          <a href="./search.html" class="btn btn-primary lift"> Log Out </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Content -->
+    <section class="pt-4 pt-md-1">
+      <div class="container">
+        <br />
+        <div class="row">
+          <div class="col-md-12">
+            <h1 class="q">Quiz History</h1>
+          </div>
+        </div>
+        <div class="accordion" id="accordionExample" style="margin-bottom: 2cm">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseOne"
+                aria-expanded="true"
+                aria-controls="collapseOne"
+              >
+                2021-04-01
+              </button>
+            </h2>
+            <div
+              id="collapseOne"
+              class="accordion-collapse collapse"
+              aria-labelledby="headingOne"
+              data-bs-parent="#accordionExample"
+            >
+              <div class="accordion-body">
+                <a href="review.html"
+                  >Attempt on <code>List1</code> <strong>9</strong> out of
+                  <strong>10</strong> correct answers.</a
+                ><br />
+                <a href="url"
+                  >Attempt on <code>List2</code> <strong>8</strong> out of
+                  <strong>10</strong> correct answers.</a
+                >
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseTwo"
+                aria-expanded="false"
+                aria-controls="collapseTwo"
+              >
+                2021-03-15
+              </button>
+            </h2>
+            <div
+              id="collapseTwo"
+              class="accordion-collapse collapse"
+              aria-labelledby="headingTwo"
+              data-bs-parent="#accordionExample"
+            >
+              <div class="accordion-body">
+                <a href="why"
+                  >Attempt on <code>List3</code> <strong>9</strong> out of
+                  <strong>10</strong> correct answers.</a
+                ><br />
+                <a href="why"
+                  >Attempt on <code>List4</code> <strong>8</strong> out of
+                  <strong>10</strong> correct answers.</a
+                >
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseThree"
+                aria-expanded="false"
+                aria-controls="collapseThree"
+              >
+                2021-03-01
+              </button>
+            </h2>
+            <div
+              id="collapseThree"
+              class="accordion-collapse collapse"
+              aria-labelledby="headingThree"
+              data-bs-parent="#accordionExample"
+            >
+              <div class="accordion-body">
+                <a href="url2"
+                  >Attempt on <code>List1</code> <strong>10</strong> out of
+                  <strong>10</strong> correct answers.</a
+                ><br />
+                <a href="url2"
+                  >Attempt on <code>List5</code> <strong>1</strong> out of
+                  <strong>10</strong> correct answers.</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="control" style="text-align: right">
+          <a href="./squiz.html"
+            ><input class="btn btn-primary" type="button" value="Finished"
+          /></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-8 py-md-11 bg-gray-200" style="margin-top: 10vh">
+      <div class="container">
+        <div class="row">
+          <p class="text-gray-700 mb-2 text-center">
+            Copyright &copy; CSE 416 The ALL Dictionary
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <!-- Map JS -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js"></script>
+
+    <!-- Vendor JS -->
+    <script src="../assets/js/vendor.bundle.js"></script>
+
+    <!-- Theme JS -->
+    <script src="../assets/js/theme.bundle.js"></script>
+  </body>
+</html>

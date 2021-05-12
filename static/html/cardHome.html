@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="{{url_for('static', filename='assets/favicon/favicon.ico')}}" type="image/x-icon" />
+
+  <!-- Map CSS -->
+  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" />
+
+  <!-- Libs CSS -->
+  <link rel="stylesheet" href="{{url_for('static', filename='assets/css/libs.bundle.css')}}" />
+
+  <!-- Theme CSS -->
+  <link rel="stylesheet" href="{{url_for('static', filename='assets/css/theme.bundle.css')}}" />
+
+  <link rel="stylesheet" href="{{url_for('static', filename='assets/css/makeCard.css')}}" />
+
+  <script src="https://kit.fontawesome.com/e547ffbc9a.js" crossorigin="anonymous"></script>
+  <!-- Title -->
+  <title>The ALL Dictionary</title>
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-gray-200">
+    <div class="container">
+      <!-- Brand -->
+      <a class="navbar-brand" href="search">
+        <img src="{{url_for('static', filename='assets/img/brand.svg')}}" class="navbar-brand-img" alt="..." />
+      </a>
+
+      <!-- Toggler -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+        aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Collapse -->
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <!-- Toggler -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+          aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <i class="fe fe-x"></i>
+        </button>
+
+        <!-- Navigation -->
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="search"> Search </a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="navbarQuiz" data-bs-toggle="dropdown" href="#" aria-haspopup="true"
+              aria-expanded="false">
+              Quiz
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarQuiz">
+              <a class="dropdown-item" href="squiz">Quiz</a>
+              <a class="dropdown-item" href="wc">Words Challenge</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="cardHome"> Card </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="payment"> Shop </a>
+          </li>
+        </ul>
+
+        <!-- Button -->
+        <a href="mypage" class="btn btn-primary shadow lift me-1 ms-auto">
+          My Page
+        </a>
+        <a href="search" class="btn btn-primary lift"> Log Out </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <section class="pt-4 pt-md-11">
+    <div class="container"">
+        <br />
+        <div class=" row">
+      <!--Card List-->
+      <h2 id="card-list"><b>Card List</b></h2>
+      <div>
+        <button id="list_btn" type="button" class="btn btn-outline-primary bt-sm mb-3" data-bs-toggle="modal"
+          data-bs-target="#addListModal">
+          Add New package
+        </button>
+      </div>
+      <div class="accordion" id="accordionExample">
+        {% for idx in range(packages|length) %}
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="heading{{idx}}">
+            <button class="{% if idx == 0 %}accordion-button{% else  %}accordion-button collapsed{% endif %}"
+              type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{idx}}"
+              aria-expanded="{% if idx == 0 %}true{% else  %}false{% endif %}" aria-controls="collapse{{idx}}">
+              {{ packages[idx]['name'] }}
+            </button>
+          </h2>
+          <div id="collapse{{idx}}"
+            class="{% if idx == 0 %}accordion-collapse collapse show{% else  %}accordion-collapse collapse{% endif %}"
+            aria-labelledby="heading{{idx}}" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              {% if packages[idx]['words'] %}
+              <ul class="list-group list-group-flush">
+                {% for word in packages[idx]['words'] %}
+                <li class="list-group-item">
+                  <a href="showCard?package={{ packages[idx]['id'] }}&word={{ word['id']}}">{{ word['name'] }}</a>
+                </li>
+                {% endfor %}
+                <!-- <li class="list-group-item">
+                          <a href="showCard">Programming </a>
+                        </li>
+                        <li class="list-group-item">
+                          <a href="showCard2">Improve</a>
+                        </li>
+                        <li class="list-group-item">Third word</li> -->
+              </ul>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        <!-- <div class="accordion-item">
+              <h2 class="accordion-header" id="headingOne">
+                <button
+                  class="accordion-button"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapseOne"
+                  aria-expanded="true"
+                  aria-controls="collapseOne"
+                >
+                {{ packages[0] }}
+                </button>
+              </h2>
+              <div
+                id="collapseOne"
+                class="accordion-collapse collapse show"
+                aria-labelledby="headingOne"
+                data-bs-parent="#accordionExample"
+              >
+                <div class="accordion-body">
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                      <a href="showCard">Programming </a>
+                    </li>
+                    <li class="list-group-item">
+                      <a href="showCard2">Improve</a>
+                    </li>
+                    <li class="list-group-item">Third word</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingTwo">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapseTwo"
+                  aria-expanded="false"
+                  aria-controls="collapseTwo"
+                >
+                {{ packages[1] }}
+                </button>
+              </h2>
+              <div
+                id="collapseTwo"
+                class="accordion-collapse collapse"
+                aria-labelledby="headingTwo"
+                data-bs-parent="#accordionExample"
+              >
+                <div class="accordion-body">
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item">First word</li>
+                    <li class="list-group-item">Second word</li>
+                    <li class="list-group-item">Third word</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingThree">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapseThree"
+                  aria-expanded="false"
+                  aria-controls="collapseThree"
+                >
+                {{ packages[2] }}
+                </button>
+              </h2>
+              <div
+                id="collapseThree"
+                class="accordion-collapse collapse"
+                aria-labelledby="headingThree"
+                data-bs-parent="#accordionExample"
+              >
+                <div class="accordion-body">
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item">First word</li>
+                    <li class="list-group-item">Second word</li>
+                    <li class="list-group-item">Third word</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div> -->
+        <!-- Add list modal-->
+        <div class="modal fade" id="addListModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                  Add New Package
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form action="/cardHome" method="POST">
+                  <div class="mb-3">
+                    <label for="newFriend" class="form-label">New Package Name</label>
+                    <input type="userID" class="form-control" id="newFriend" name="newPackage" />
+                  </div>
+                  <br />
+                  <hr />
+                  <div>
+                    <button style="float: right; margin-left: 5px" type="submit" class="btn btn-primary">
+                      Submit</button><button style="float: right" type="button" class="btn btn-secondary"
+                      data-bs-dismiss="modal">
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add list modal -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="py-8 py-md-11 bg-gray-200" style="margin-top: 10vh">
+    <div class="container">
+      <div class="row">
+        <p class="text-gray-700 mb-2 text-center">
+          Copyright &copy; CSE 416 The ALL Dictionary
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT -->
+  <!-- Map JS -->
+  <script src="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js"></script>
+
+  <!-- Vendor JS -->
+  <script src="{{url_for('static', filename='assets/js/vendor.bundle.js')}}"></script>
+
+  <!-- Theme JS -->
+  <script src="{{url_for('static', filename='assets/js/theme.bundle.js')}}"></script>
+</body>
+
+</html>
