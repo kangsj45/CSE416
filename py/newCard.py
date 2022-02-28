@@ -2,6 +2,9 @@ from flask import Flask, render_template, request, jsonify, redirect
 from flask_mysqldb import MySQL
 
 app = Flask(__name__, template_folder='../static')
+app._static_folder = '../static'
+
+
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '0000'
@@ -99,7 +102,7 @@ def getWord(w_id):
 def getSearchHistory():
     cursor = mysql.connection.cursor()
     cursor.execute(
-        f"""SELECT * FROM hassearchhistory order by regDate desc;""")
+        f"""SELECT * FROM HasSearchHistory order by regDate desc;""")
     result = cursor.fetchall()
     cursor.close()
     return [his[1] for his in result]
@@ -169,8 +172,17 @@ def showCard():
             if package_list[p_i]['id'] == p_id:
                 p_in_p = p_i
                 break
-        w_id = int(
-            param_dict['word']) if 'word' in param_dict else package_list[p_in_p]['words'][0]['id']
+       # w_id = int(
+           # param_dict['word']) if 'word' in param_dict else package_list[p_in_p]['words'][0]['id']
+        w_id = 0
+        if 'word' in param_dict:
+            value = param_dict['word']
+            if value == None or value == 'None':
+                w_id = package_list[p_in_p]['words'][0]['id']
+            else:
+                w_id = int(value)
+        else:
+            w_id = package_list[p_in_p]['words'][0]['id']
         w_in_p = 0
         for w_i in range(len(package_list[p_in_p]['words'])):
             if package_list[p_in_p]['words'][w_i]['id'] == w_id:
@@ -230,3 +242,4 @@ def addPackage():
 
 
 app.run(debug=True)
+
