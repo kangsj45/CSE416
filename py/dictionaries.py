@@ -1,17 +1,19 @@
 import json
 import requests
-from apiclient.discovery import build
+from apiclient import discovery
 from GoogleNews import GoogleNews
-from PyDictionary import PyDictionary
 from udpy import UrbanClient
 import wikipediaapi
-from wiktionaryparser import WiktionaryParser
-from PyDictionary import PyDictionary
 from youtubesearchpython import VideosSearch
 import asyncio
+import time
 
 
-def youtubeDict(word):
+async def youtubeDict(word):
+    # print("start youtube")
+
+    await asyncio.sleep(0)
+
     output = ""
 
     videosSearch = VideosSearch(word)
@@ -20,22 +22,8 @@ def youtubeDict(word):
 
     resultList = results['result']
 
-    types = [sub['type'] for sub in resultList]
-    ids = [sub['id'] for sub in resultList]
     titles = [sub['title'] for sub in resultList]
-    publishedTimes = [sub['publishedTime'] for sub in resultList]
-    durations = [sub['duration'] for sub in resultList]
 
-    viewCounts = [sub['viewCount'] for sub in resultList]
-    views = [sub['text'] for sub in viewCounts]
-    viewsShortened = [sub['short'] for sub in viewCounts]
-
-    thumbNails = [sub['thumbnails'] for sub in resultList]
-    richThumbnails = [sub['richThumbnail'] for sub in resultList]
-    descriptionSnippets = [sub['descriptionSnippet'] for sub in resultList]
-
-    channels = [sub['channel'] for sub in resultList]
-    channelNames = [sub['name'] for sub in channels]
 
     """
     These parts are not needed.
@@ -45,86 +33,22 @@ def youtubeDict(word):
     channelPictureURLs = [sub['url'] for sub in channelPictureInfo]
     """
 
-    channelLinks = [sub['link'] for sub in channels]
-
-    accessibilities = [sub['accessibility'] for sub in resultList]
     links = [sub['link'] for sub in resultList]
-    shelfTitles = [sub['shelfTitle'] for sub in resultList]
 
     for i in range(0, 3):
-        output += "ID: " + ids[i] + "\n"
-        output +="Title: " + titles[i] + "\n"
-        output +="Link: " + links[i] + "\n"
+        link = links[i].replace("watch?v=", "embed/", 1)
+        output +="<h5>Title: " + titles[i] + "</h5>"
+        output += "<iframe width=\'50%\' height=\'250px\' src=\"" + link +"\"></iframe></br></br>"
     
+    # print("fin youtube")
 
     return output
 
-def wordnetDict(word):
-    dictionary = PyDictionary()
-    
-    output = ""
+async def mwcDict(word):
+    # print("start mwc")
 
-    results = dictionary.meaning(word)
-    partOfSpeechList = []
-    definitionList = []
+    await asyncio.sleep(0)
 
-    if results == None:
-        output += "The " +  word + " is not found on WordNet."
-    else:
-        for result in results:
-            partOfSpeechList.append(result)
-            definitionList.append(results.get(result)[0])
-
-        for i in range(len(definitionList)):
-            output += "Result"+ str(i+1) + ":" +"\n"
-            output += "Part of speech: "+ partOfSpeechList[i] +"\n"
-            output += "Definition: "+ definitionList[i]+"\n"
-    
-    return output[:-1]
-
-def wiktionaryDict(word):
-    output = ""
-    
-    jsonParser = WiktionaryParser()
-    jsonResult = jsonParser.fetch(word)
-
-    if jsonResult == []:
-        output = word + " is not found on Wiktionary"
-    else:
-        dictResult = jsonResult[0]
-
-        pronunciations = dictResult.get("pronunciations")
-        pronunciationText = pronunciations.get("text")
-        pronunciationAudio = pronunciations.get("audio")
-
-        definitionList = dictResult.get("definitions")
-        definitions = definitionList[0]
-
-        relatedWordList = definitions.get("relatedWords")
-        relatedWords = relatedWordList[0]
-
-        textList = definitions.get("text")
-        texts = textList[0]
-
-        partOfSpeech = definitions.get("partOfSpeech")
-        examples = definitions.get("examples")
-
-        etymology = dictResult.get("etymology")
-
-        output += "Definitions:" +"\n"
-        output += texts + "\n"
-        output += "\n"
-        
-        output +="Part of speech: " + partOfSpeech +"\n"
-        output += "\n"
-
-        output += "Example: " +"\n"
-        for j in range(0, 3):
-            output += str(j+1) + ". " + examples[j] +"\n"
-
-    return output
-
-def mwcDict(word):
     output = ""
 
     apiKey  = "c33d59f0-4576-4dfc-a389-918e5316421b"
@@ -142,26 +66,30 @@ def mwcDict(word):
     definitionResults = []
     shortDefinitionResults = []
 
-    for i in range(3):
-        output += "Counter: "
-        
-        stemList = dictionaryResult[i].get('meta').get('stems')
-        
-        output += stemList[0] + "</br>"
-        
-        partOfSpeech = dictionaryResult[i].get('fl')
+    try:
+        stemList = dictionaryResult[0].get('meta').get('stems')
+            
+        partOfSpeech = dictionaryResult[0].get('fl')
         output +="Part of speech: " + partOfSpeech  + "</br>"
         partOfSpeeches.append(partOfSpeech)
         
-        shortdefList = dictionaryResult[i].get('shortdef')
+        shortdefList = dictionaryResult[0].get('shortdef')
         output +="Short definitons: " + "</br>"
         for j in range(0, len(shortdefList)):
             output += str(j+1) + ". " + shortdefList[j] + "</br>"
             shortDefinitionResults.append(shortdefList[j])
+    except:
+        return "No result"
+    
+    # print("fin mwc")
 
     return output
 
-def mwlDict(word):
+async def mwlDict(word):
+    # print("start mwl")
+
+    await asyncio.sleep(0)
+
     output = ""
 
     apiKey  = "c0fe6dc9-3217-4825-b6ad-fac424c7d7b3"
@@ -178,54 +106,64 @@ def mwlDict(word):
     definitionResults = []
     shortDefinitionResults = []
 
-    for i in range(3):
-        output += "Counter: "
-        
-        stemList = dictionaryResult[i].get('meta').get('stems')
-        
-        output += stemList[0] + "</br>"
-        
-        partOfSpeech = dictionaryResult[i].get('fl')
+    try:
+        stemList = dictionaryResult[0].get('meta').get('stems')
+            
+        partOfSpeech = dictionaryResult[0].get('fl')
         output +="Part of speech: " + partOfSpeech  + "</br>"
         partOfSpeeches.append(partOfSpeech)
         
-        shortdefList = dictionaryResult[i].get('shortdef')
+        shortdefList = dictionaryResult[0].get('shortdef')
         output +="Short definitons: " + "</br>"
         for j in range(0, len(shortdefList)):
             output += str(j+1) + ". " + shortdefList[j] + "</br>"
             shortDefinitionResults.append(shortdefList[j])
+    except:
+        return "No result"
+    
+    # print("fin mwl")
 
     return output
 
-def googleImageDict(word):
+async def googleImageDict(word):
+    # print("start google image")
+
+    await asyncio.sleep(0)
+
     output = ""
     apiKey = "AIzaSyCB-M_Z2BlLfWgAMOuhLmNHHmoBoRCme50"
     searchEngineID = "4c4e5dd8e9cf81ff8"
 
-    resource = build("customsearch", "v1", developerKey=apiKey).cse()
+    resource = discovery.build("customsearch", "v1", developerKey=apiKey).cse()
     results = resource.list(q=word, cx=searchEngineID, searchType='image').execute()
 
-    resultURL = results.get('url').get('template')
     imageDataSet = results.get('items')
 
+    # 페이스북 자료만 안나옴
+
     for i in range(0, 3):
+        title = imageDataSet[i].get('title')
         image = imageDataSet[i].get('image')
-
-        link = imageDataSet[i].get('link')
+        
+        if title[-10:] == '| Facebook':
+            link = image.get('thumbnailLink')
+            width = '30%'
+        else:
+            link = imageDataSet[i].get('link')
+            width = '50%'
         contextLink = image.get('contextLink')
-
-        output += "<a href=\'" + link + "\' height=\'5\' width=\'10\'><img src=\' "+ contextLink +" \' alt=\'context link.\'><a>\n"
+        output += "<h5>"+ title +"</h5>"
+        output += "<a href=\'" + contextLink + "\' height=\'5\' width=\'10\'><img src=\' "+ link +" \' alt=\'context link.\' width = "+ width +" height=\'auto\'></a></br></br>"
+    
+    # output += "Full URL: <a href = \"" + resultURL + "\">" + resultURL + "</a><br>"
+    # print("fin google image")
 
     return output
 
-def etymonlineDict(word):
-    baseURL = "https://www.etymonline.com/"
-    queryURL = "search?q=" + word.replace(" ", "+")
-    wordURL = baseURL + queryURL
+async def googleNewsDict(word):
+    # print("start google news")
 
-    return wordURL
-
-def googleNewsDict(word):
+    await asyncio.sleep(0)
     output = ''
 
     googlenews = GoogleNews(lang='en')
@@ -233,15 +171,28 @@ def googleNewsDict(word):
     googlenews.search(word)
 
     result = googlenews.result()
-    for i in range(5):
+
+    if len(result) == 0:
+        return "No result"
+    elif len(result) > 5:
+        n = 5
+    else:
+        n = len(result)
+
+    for i in range(n):
         res = result[i]
         link = res['link']
         title = res['title']
-        output += '<a href=\'' + link + '\'>' + title + '</a>\n'
+        output += '<a href=\'' + link + '\'>' + title + '</a><br>'
+    
+    # print("fin google news")
 
     return output[:-1]
 
-def oxfordDict(word):
+async def oxfordDict(word):
+    # print("start oxford")
+
+    await asyncio.sleep(0)
     output = ""
     appID  = "501e439d"
     appKey  = "f7bd8a4c25db428d6b1f972d3acc85d7"
@@ -250,109 +201,117 @@ def oxfordDict(word):
 
     wordURL = "https://od-api.oxforddictionaries.com/api/v2/" + endPoint + "/" + languageCode + "/" + word.lower()
 
-    result = requests.get(wordURL, headers = {"app_ID": appID, "app_Key": appKey})
+    try:
+        result = requests.get(wordURL, headers = {"app_ID": appID, "app_Key": appKey})
 
 
-    jsonResult = json.dumps(result.json())
+        jsonResult = json.dumps(result.json())
 
-    dictionaryResult = json.loads(jsonResult)
+        dictionaryResult = json.loads(jsonResult)
 
-    realResultList = dictionaryResult["results"]
-    realResultDict = realResultList[0]
+        realResultList = dictionaryResult["results"]
+        realResultDict = realResultList[0]
 
-    resultInfoList = realResultDict["lexicalEntries"]
-    resultInfoDict = resultInfoList[0]
-    resultDataList = resultInfoDict["entries"]
-    resultDataDict = resultDataList[0]
+        resultInfoList = realResultDict["lexicalEntries"]
+        resultInfoDict = resultInfoList[0]
+        resultDataList = resultInfoDict["entries"]
+        resultDataDict = resultDataList[0]
 
 
-    wordSensesList = resultDataDict["senses"]
+        wordSensesList = resultDataDict["senses"]
 
-    wordResult = {}
-    for dict in wordSensesList:
-        for list in dict:
-            if list in wordResult:
-                wordResult[list] += (dict[list])
-            else:
-                wordResult[list] = dict[list]
+        wordResult = {}
+        for dict in wordSensesList:
+            for list in dict:
+                if list in wordResult:
+                    wordResult[list] += (dict[list])
+                else:
+                    wordResult[list] = dict[list]
 
-    output += "Definitions:"+ "\n"
-    definitionList = wordResult.get("definitions")
-    for i in range(0, len(definitionList)):
-        output += str(i+1) + ". " + definitionList[i] + "\n"
-    output += "\n"
+        output += "Definitions:"+ "<br>"
+        definitionList = wordResult.get("definitions")
+        
+        if definitionList == None:
+            return "No result"
 
-    output += "Examples: "+ "\n"
-    exampleList = wordResult.get("examples")
-    if exampleList == None:
-        output += "No example" + "\n"
-    else:
-        for i in range(0, len(exampleList)):
-            output += str(i+1) + ". " + exampleList[i].get("text") +"\n"
+        for i in range(0, len(definitionList)):
+            output += str(i+1) + ". " + definitionList[i] + "<br>"
+        output += "<br>"
 
-    return output[:-1]
+        output += "Examples: "+ "<br>"
+        exampleList = wordResult.get("examples")
+        if exampleList == None:
+            output += "No example" + "<br>"
+        else:
+            for i in range(0, len(exampleList)):
+                output += str(i+1) + ". " + exampleList[i].get("text") +"<br>"
+        
+        # print('fin oxford')
+        
+        return output[:-1]
+    except:
+        return "No result"
 
-def synonymDict(word):
-    syn_output = ""
-    ant_output = ""
-    
-    thesaurus = PyDictionary()
+async def urbanDict(word):
+    # print("start urban ")
 
-    synonyms = thesaurus.synonym(word)
-    if synonyms == None:
-        syn_output = "There is no synonym founded at synonym.com"
-    else:
-        syn_output += "Here are the synonyms for the following word: " + word + "\n"
-        for i in range(0, len(synonyms)):
-            syn_output += str(i+1) + ". " + synonyms[i] + "\n"
+    await asyncio.sleep(0)
+    try:
+        output = ""
+        client = UrbanClient()
+        definitions = client.get_definition(word)
 
-    antonyms = thesaurus.antonym(word)
-    if antonyms == None:
-        ant_output = "There is no antonym founded at synonym.com"
-    else:
-        ant_output += "Here are the antonyms for the following word:" + word + "\n"
-        for j in range(0, len(antonyms)):
-            ant_output += str(j+1) + ". " + antonyms[j] + '\n'
+        if len(definitions) == 0:
+            return "No result"
+        elif len(definitions) > 3:
+            n = 3
+        else:
+            n = len(definitions)
 
-    output = syn_output + "\n" + ant_output
-
-    return output
-
-def thefreedictionaryDict(word):
-    baseURL = "http://www.thefreedictionary.com/"
-    queryURL = word.replace(" ", "+")
-    wordURL = baseURL + queryURL
-
-    return wordURL
-
-def urbanDict(word):
-    output = ""
-    client = UrbanClient()
-    definitions = client.get_definition(word)
-
-    i = 0
-    while i < 3:
-        for lexis in definitions:
-            i = i + 1
-            output += "Definition " + str(i) + ":\n"
-            output += lexis.definition + "\n"
+        for i in range(0, n):
+            lexis = definitions[i]
+            output += "Definition " + str(i + 1) + ":<br>"
+            output += lexis.definition + "<br>"
             
-            output += "Example " + str(i) + ": \n"
-            output += lexis.example + "\n"
-        output += "\n" 
+            output += "Example " + str(i + 1) + ": <br>"
+            output += lexis.example + "<br>"
+        output += "<br>"
+        link = "https://www.urbandictionary.com/define.php?term="+word
+        output += "Full URL: <a href = \"" + link + "\">" + link + "</a><br>"
 
-    output += "Link for the results searched: https://www.urbandictionary.com/define.php?term="+word
+        return output
 
-    return output
+    except:
+        return "No result"
+    
+    # print("fin urban")
 
-def wikiDict(word):
+async def wikiDict(word):
+    # print("start wiki")
+    await asyncio.sleep(0)
     output = ""
 
     wikiResult = wikipediaapi.Wikipedia(language='en', extract_format=wikipediaapi.ExtractFormat.WIKI)
     wikiPage = wikiResult.page(word)
+    if wikiPage.summary == "":
+        return "No result"
 
-    output += "Page - Summary: " + wikiPage.summary +"\n"
-    output += "\n"
-    output += "Full URL: " + wikiPage.fullurl +"\n"
+    output += "Page - Summary: " + wikiPage.summary +"<br>"
+    output += "<br>"
+    output += "Full URL: <a href = \"" + wikiPage.fullurl + "\">" + wikiPage.fullurl + "</a><br>"
 
+    # print("fin wiki")
     return output
+
+# def hello(word):
+#     start = time.time()
+#     loop = asyncio.new_event_loop()
+#     asyncio.set_event_loop(loop)
+#     tasks = mwlDict(word), mwcDict(word), oxfordDict(word), googleImageDict(word), googleNewsDict(word), urbanDict(word), wikiDict(word), youtubeDict(word)
+#     mwl, mwc, oxford, googleImage, googleNews, urban, wiki, youtube = loop.run_until_complete(asyncio.gather(*tasks))
+#     loop.close()
+#     fin = time.time()
+#     print(googleImage)
+#     return fin-start
+
+# print(hello('info'))
